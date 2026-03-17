@@ -1,18 +1,12 @@
-export interface Drug {
-  code: string;
-  name: string;
-  qty: number;
-}
-
 export interface Patient {
-  id: string;
+  prescriptionno: string;
+  queue: string;
   hn: string;
-  fullname: string;
+  patientname: string;
+  createdDT: Date;
+  checkDT: Date | null;
+  userCheck: string | null;
+  timeConfirm: Date;
+  zone: string;
   age: number;
-  queueNo: string;
-  drugs: Drug[];
-  stamped?: boolean;
-  time?: string;
-  status?: string;
-  ward?: string;
 }

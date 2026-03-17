@@ -23,11 +23,12 @@ export class MatchingComponent implements OnInit {
   patients: Patient[] = [];
   selected?: Patient;
   scanInput = '';
-  displayedColumns = ['queueNo', 'hn', 'fullname', 'time', 'status'];
+  displayedColumns = ['queue', 'hn', 'patientname', 'timeConfirm', 'zone'];
   running = false;
+  matchingSuccess = false;
   @ViewChild('scanBox') scanBox!: ElementRef;
 
-  constructor(private queueService: QueueService) {}
+  constructor(private queueService: QueueService) { }
 
   ngOnInit() {
     this.queueService.patients$.subscribe((data) => {
@@ -47,6 +48,11 @@ export class MatchingComponent implements OnInit {
     let match = await this.queueService.processScan(hn);
     if (match) {
       this.selected = match;
+      this.matchingSuccess = true;
+      // ซ่อน success message หลังจาก 3 วินาที
+      setTimeout(() => {
+        this.matchingSuccess = false;
+      }, 3000);
     }
 
     this.scanInput = '';

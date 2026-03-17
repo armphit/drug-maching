@@ -49,6 +49,7 @@
   font-weight: 600;
   line-height: 1;
 }
+
 .title-group {
   margin-left: 10px;
 }
@@ -83,10 +84,12 @@
   font-size: 34px;
   font-weight: 700;
 }
+
 .label {
   font-size: 32px;
   font-weight: 700;
 }
+
 .queue-box .count {
   font-size: 48px;
   font-weight: 700;
@@ -178,12 +181,14 @@
 table {
   width: 100%;
 }
+
 td,
 th {
   font-size: 32px;
   font-weight: 800;
   line-height: 2.5;
 }
+
 tr {
   transition: 0.2s;
 }
@@ -214,9 +219,11 @@ tr:hover {
 .status.WAIT {
   background: #ffe0b2;
 }
+
 .status.DONE {
   background: #c8e6c9;
 }
+
 .status.MATCHING {
   background: #ffe0b2;
 }
@@ -238,22 +245,30 @@ tr:hover {
   margin-top: 10px;
 }
 
-.drug-list {
+.info-section {
   flex: 1;
   overflow: auto;
   margin: 10px 0;
+  padding: 10px 0;
 }
 
-.drug {
+.info-row {
   display: flex;
   justify-content: space-between;
-  padding: 8px 0;
+  align-items: center;
+  padding: 12px 0;
   border-bottom: 1px solid #eee;
-  font-size: 28px;
+  font-size: 26px;
 }
 
-.qty {
+.info-label {
+  color: #666;
+  font-weight: 500;
+}
+
+.info-value {
   font-weight: 600;
+  color: #1976d2;
 }
 
 // .success {
@@ -329,6 +344,7 @@ tr:hover {
     opacity: 0;
     transform: translateY(6px);
   }
+
   to {
     opacity: 1;
     transform: none;

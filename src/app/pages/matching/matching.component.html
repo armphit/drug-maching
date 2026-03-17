@@ -30,20 +30,11 @@
 
     <!-- RIGHT : status + control -->
     <div class="tb-right">
-      <div
-        class="status-indicator"
-        [class.online]="running"
-        [class.offline]="!running"
-      >
+      <div class="status-indicator" [class.online]="running" [class.offline]="!running">
         ● {{ running ? "ONLINE" : "PAUSED" }}
       </div>
 
-      <button
-        mat-raised-button
-        [color]="running ? 'warn' : 'primary'"
-        (click)="toggleRealtime()"
-        class="toggle-btn"
-      >
+      <button mat-raised-button [color]="running ? 'warn' : 'primary'" (click)="toggleRealtime()" class="toggle-btn">
         {{ running ? "⏸ หยุดรับคิว" : "▶ เริ่มรับคิว" }}
       </button>
     </div>
@@ -53,14 +44,8 @@
   <section class="scan-bar">
     <mat-icon class="scan-icon">qr_code_scanner</mat-icon>
 
-    <input
-      #scanBox
-      type="text"
-      [(ngModel)]="scanInput"
-      (keyup.enter)="scanHN()"
-      placeholder="Scan HN / Barcode..."
-      autofocus
-    />
+    <input #scanBox type="text" [(ngModel)]="scanInput" (keyup.enter)="scanHN()" placeholder="Scan HN / Barcode..."
+      autofocus />
   </section>
 
   <!-- MAIN -->
@@ -68,75 +53,74 @@
     <!-- LEFT LIST -->
     <div class="list-card">
       <table mat-table [dataSource]="patients">
-        <ng-container matColumnDef="queueNo">
+        <ng-container matColumnDef="queue">
           <th mat-header-cell *matHeaderCellDef>คิว</th>
           <td mat-cell *matCellDef="let r">
-            <span class="queue-chip">{{ r.queueNo }}</span>
+            <span class="queue-chip">{{ r.queue }}</span>
           </td>
         </ng-container>
         <ng-container matColumnDef="hn">
           <th mat-header-cell *matHeaderCellDef>HN</th>
           <td mat-cell *matCellDef="let r">{{ r.hn }}</td>
         </ng-container>
-        <ng-container matColumnDef="fullname">
+        <ng-container matColumnDef="patientname">
           <th mat-header-cell *matHeaderCellDef>ชื่อ</th>
-          <td mat-cell *matCellDef="let r">{{ r.fullname }}</td>
+          <td mat-cell *matCellDef="let r">{{ r.patientname }}</td>
         </ng-container>
-        <ng-container matColumnDef="ward">
-          <th mat-header-cell *matHeaderCellDef>เตียง</th>
-          <td mat-cell *matCellDef="let r">{{ r.ward }}</td>
-        </ng-container>
-        <ng-container matColumnDef="time">
+        <ng-container matColumnDef="timeConfirm">
           <th mat-header-cell *matHeaderCellDef>เวลา</th>
-          <td mat-cell *matCellDef="let r">{{ r.time }}</td>
+          <td mat-cell *matCellDef="let r">{{ r.timeConfirm | date:'HH:mm:ss' }}</td>
         </ng-container>
-        <ng-container matColumnDef="status">
-          <th mat-header-cell *matHeaderCellDef>สถานะ</th>
-          <td mat-cell *matCellDef="let r">
-            <span class="status" [ngClass]="r.status">
-              {{ r.status }}
-            </span>
-          </td>
+        <ng-container matColumnDef="zone">
+          <th mat-header-cell *matHeaderCellDef>โซน</th>
+          <td mat-cell *matCellDef="let r">{{ r.zone }}</td>
         </ng-container>
 
         <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
 
-        <tr
-          mat-row
-          *matRowDef="let row; columns: displayedColumns"
-          [class.selected]="selected?.hn === row.hn"
-        ></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumns" [class.selected]="selected?.hn === row.hn"></tr>
       </table>
     </div>
 
     <!-- RIGHT DETAIL -->
     <div class="detail-card" *ngIf="selected">
       <div class="detail-header">
-        <span class="label">{{ selected.fullname }}</span>
-        <div class="meta">HN {{ selected.hn }} • อายุ {{ selected.age }}</div>
+        <span class="label">{{ selected.patientname }}</span>
+        <div class="meta">HN {{ selected.hn }} • อายุ {{ selected.age }} ปี</div>
       </div>
 
       <mat-divider></mat-divider>
 
-      <div class="drug-list">
-        <div class="drug" *ngFor="let d of selected.drugs">
-          <span>{{ d.name }}</span>
-          <span class="qty">x{{ d.qty }}</span>
+      <div class="info-section">
+        <div class="info-row">
+          <span class="info-label">เลขใบสั่งยา (Rx):</span>
+          <span class="info-value">{{ selected.prescriptionno }}</span>
+        </div>
+        <div class="info-row">
+          <span class="info-label">คิว:</span>
+          <span class="info-value">{{ selected.queue }}</span>
+        </div>
+        <div class="info-row">
+          <span class="info-label">โซน:</span>
+          <span class="info-value">{{ selected.zone }}</span>
+        </div>
+        <div class="info-row">
+          <span class="info-label">เวลายืนยัน:</span>
+          <span class="info-value">{{ selected.timeConfirm | date:'HH:mm:ss' }}</span>
         </div>
       </div>
+
       <div class="action-area">
-        <button mat-raised-button color="primary" class="print-btn">
+        <button mat-raised-button color="primary" class="print-btn" *ngIf="!matchingSuccess">
           <mat-icon>print</mat-icon>
           พิมพ์ใบนำทาง
         </button>
 
-        <div class="success-pill">
+        <div class="success-pill" *ngIf="matchingSuccess">
           <mat-icon>check_circle</mat-icon>
           Matching สำเร็จ
         </div>
       </div>
-      <!-- <div class="success"><mat-icon>print</mat-icon> พิมพ์ใบนำทาง</div>
-      <div class="success">✔ Matching สำเร็จ</div> -->
     </div>
   </section>
 </div>
