@@ -1,0 +1,142 @@
+<div class="page">
+  <!-- TOP BAR -->
+  <!-- <header class="topbar">
+    <div class="left">
+      <mat-icon>local_pharmacy</mat-icon>
+      <span class="title">Drug Matching</span>
+    </div>
+
+    <div class="right">
+      <span class="queue-badge"> {{ patients.length }} คิว </span>
+    </div>
+  </header> -->
+  <header class="topbar">
+    <!-- LEFT : title -->
+    <div class="tb-left">
+      <mat-icon style="height: 35px; font-size: 40px">local_pharmacy</mat-icon>
+      <div class="title-group">
+        <div class="title">Drug Matching</div>
+        <div class="subtitle">Pharmacy 1</div>
+      </div>
+    </div>
+
+    <!-- CENTER : queue count -->
+    <div class="tb-center">
+      <div class="queue-box">
+        <span class="label">คิวทั้งหมด</span>
+        <span class="count">{{ patients.length }}</span>
+      </div>
+    </div>
+
+    <!-- RIGHT : status + control -->
+    <div class="tb-right">
+      <div
+        class="status-indicator"
+        [class.online]="running"
+        [class.offline]="!running"
+      >
+        ● {{ running ? "ONLINE" : "PAUSED" }}
+      </div>
+
+      <button
+        mat-raised-button
+        [color]="running ? 'warn' : 'primary'"
+        (click)="toggleRealtime()"
+        class="toggle-btn"
+      >
+        {{ running ? "⏸ หยุดรับคิว" : "▶ เริ่มรับคิว" }}
+      </button>
+    </div>
+  </header>
+
+  <!-- SCAN -->
+  <section class="scan-bar">
+    <mat-icon class="scan-icon">qr_code_scanner</mat-icon>
+
+    <input
+      #scanBox
+      type="text"
+      [(ngModel)]="scanInput"
+      (keyup.enter)="scanHN()"
+      placeholder="Scan HN / Barcode..."
+      autofocus
+    />
+  </section>
+
+  <!-- MAIN -->
+  <section class="main">
+    <!-- LEFT LIST -->
+    <div class="list-card">
+      <table mat-table [dataSource]="patients">
+        <ng-container matColumnDef="queueNo">
+          <th mat-header-cell *matHeaderCellDef>คิว</th>
+          <td mat-cell *matCellDef="let r">
+            <span class="queue-chip">{{ r.queueNo }}</span>
+          </td>
+        </ng-container>
+        <ng-container matColumnDef="hn">
+          <th mat-header-cell *matHeaderCellDef>HN</th>
+          <td mat-cell *matCellDef="let r">{{ r.hn }}</td>
+        </ng-container>
+        <ng-container matColumnDef="fullname">
+          <th mat-header-cell *matHeaderCellDef>ชื่อ</th>
+          <td mat-cell *matCellDef="let r">{{ r.fullname }}</td>
+        </ng-container>
+        <ng-container matColumnDef="ward">
+          <th mat-header-cell *matHeaderCellDef>เตียง</th>
+          <td mat-cell *matCellDef="let r">{{ r.ward }}</td>
+        </ng-container>
+        <ng-container matColumnDef="time">
+          <th mat-header-cell *matHeaderCellDef>เวลา</th>
+          <td mat-cell *matCellDef="let r">{{ r.time }}</td>
+        </ng-container>
+        <ng-container matColumnDef="status">
+          <th mat-header-cell *matHeaderCellDef>สถานะ</th>
+          <td mat-cell *matCellDef="let r">
+            <span class="status" [ngClass]="r.status">
+              {{ r.status }}
+            </span>
+          </td>
+        </ng-container>
+
+        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+
+        <tr
+          mat-row
+          *matRowDef="let row; columns: displayedColumns"
+          [class.selected]="selected?.hn === row.hn"
+        ></tr>
+      </table>
+    </div>
+
+    <!-- RIGHT DETAIL -->
+    <div class="detail-card" *ngIf="selected">
+      <div class="detail-header">
+        <span class="label">{{ selected.fullname }}</span>
+        <div class="meta">HN {{ selected.hn }} • อายุ {{ selected.age }}</div>
+      </div>
+
+      <mat-divider></mat-divider>
+
+      <div class="drug-list">
+        <div class="drug" *ngFor="let d of selected.drugs">
+          <span>{{ d.name }}</span>
+          <span class="qty">x{{ d.qty }}</span>
+        </div>
+      </div>
+      <div class="action-area">
+        <button mat-raised-button color="primary" class="print-btn">
+          <mat-icon>print</mat-icon>
+          พิมพ์ใบนำทาง
+        </button>
+
+        <div class="success-pill">
+          <mat-icon>check_circle</mat-icon>
+          Matching สำเร็จ
+        </div>
+      </div>
+      <!-- <div class="success"><mat-icon>print</mat-icon> พิมพ์ใบนำทาง</div>
+      <div class="success">✔ Matching สำเร็จ</div> -->
+    </div>
+  </section>
+</div>

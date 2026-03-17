@@ -1,0 +1,62 @@
+<div class="page">
+  <!-- TOP BAR -->
+  <header class="topbar">
+    <div class="left">
+      <mat-icon>local_pharmacy</mat-icon>
+      <span>Drug Matching System</span>
+    </div>
+
+    <div class="right">
+      <span class="queue-badge"> คิวทั้งหมด {{ patients.length }} </span>
+    </div>
+  </header>
+
+  <!-- SCAN BAR -->
+  <section class="scan-bar">
+    <input
+      #scanBox
+      type="text"
+      [(ngModel)]="scanInput"
+      (keyup.enter)="scanHN()"
+      placeholder="Scan HN..."
+      class="scan-input"
+    />
+  </section>
+
+  <!-- MAIN CONTENT -->
+  <section class="main">
+    <!-- TABLE -->
+    <div class="table-card">
+      <table mat-table [dataSource]="patients">
+        <!-- Queue Column -->
+
+        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+
+        <tr
+          mat-row
+          *matRowDef="let row; columns: ['queue', 'name']"
+          [class.selected]="selected?.hn === row.hn"
+        ></tr>
+      </table>
+    </div>
+
+    <!-- DETAIL -->
+    <div class="detail-card" *ngIf="selected">
+      <div class="detail-header">
+        <h2>{{ selected.fullname }}</h2>
+        <div class="hn">HN : {{ selected.hn }}</div>
+      </div>
+
+      <mat-divider></mat-divider>
+
+      <div class="drug-list">
+        <div class="drug" *ngFor="let d of selected.drugs">
+          {{ d.name }}
+          <span>x{{ d.qty }}</span>
+        </div>
+      </div>
+
+      <div class="success">✔ Matching สำเร็จ</div>
+    </div>
+  </section>
+</div>

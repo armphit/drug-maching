@@ -1,0 +1,169 @@
+/* ---------- BASE ---------- */
+
+.page {
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+/* ---------- TOPBAR ---------- */
+
+.topbar {
+  height: 64px;
+  background: #1565c0;
+  color: white;
+
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 24px;
+
+  font-size: 20px;
+  font-weight: 600;
+}
+
+.left {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.queue-badge {
+  background: #42a5f5;
+  padding: 6px 14px;
+  border-radius: 20px;
+}
+
+/* ---------- SCAN ---------- */
+
+.scan-bar {
+  padding: 18px;
+  display: flex;
+  justify-content: center;
+  background: white;
+}
+
+.scan-bar input {
+  width: 520px;
+  height: 56px;
+
+  font-size: 22px;
+  padding: 0 18px;
+
+  border-radius: 12px;
+  border: 2px solid #1565c0;
+
+  outline: none;
+}
+
+.scan-bar input:focus {
+  box-shadow: 0 0 0 4px rgba(21, 101, 192, 0.2);
+}
+
+/* ---------- MAIN LAYOUT ---------- */
+
+.main {
+  flex: 1;
+  min-height: 0; /* ⭐ ห้ามลืม */
+  display: grid;
+  grid-template-columns: 1.6fr 1fr;
+  gap: 20px;
+  padding: 20px;
+  overflow: hidden;
+}
+/* ---------- TABLE ---------- */
+
+.table-card {
+  height: 100%;
+  min-height: 0;
+  overflow: hidden;
+  //  display: flex;
+  flex-direction: column;
+}
+
+.table-card table {
+  flex: 1;
+  overflow-y: auto;
+}
+
+table {
+  width: 100%;
+}
+
+.mat-mdc-header-cell {
+  font-size: 22px !important;
+  font-weight: 800;
+}
+
+.mat-mdc-cell {
+  font-size: 22px !important;
+  font-weight: 800;
+}
+
+.queue-no {
+  background: #1976d2;
+  color: white;
+  padding: 6px 14px;
+  border-radius: 20px;
+}
+
+/* highlight */
+
+.selected {
+  background: #e8f5e9 !important;
+  transition: 0.25s;
+}
+
+/* ---------- DETAIL ---------- */
+
+.detail-card {
+  height: 100%;
+  min-height: 0;
+
+  display: flex;
+  flex-direction: column;
+
+  overflow: hidden;
+}
+
+.detail-header h2 {
+  margin: 0;
+  font-size: 26px;
+}
+
+.hn {
+  color: #666;
+  margin-top: 4px;
+}
+
+.drug-list {
+  flex: 1;
+  overflow-y: auto;
+  padding-right: 6px;
+}
+.drug {
+  display: flex;
+  justify-content: space-between;
+  padding: 6px 0;
+}
+.drug-row {
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
+}
+.success {
+  margin-top: auto;
+  background: #43a047;
+  color: white;
+  padding: 12px;
+  border-radius: 10px;
+  text-align: center;
+  font-size: 18px;
+}
+tr {
+  transition: background 0.2s;
+}
+
+input {
+  caret-color: #1565c0;
+}
