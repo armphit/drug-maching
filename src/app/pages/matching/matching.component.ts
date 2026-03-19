@@ -24,7 +24,7 @@ export class MatchingComponent implements OnInit {
   selected?: Patient;
   scanInput = '';
   displayedColumns = ['queue', 'hn', 'patientname', 'timeConfirm', 'zone'];
-  running = false;
+  running = true;
   matchingSuccess = false;
   @ViewChild('scanBox') scanBox!: ElementRef;
 
@@ -50,9 +50,9 @@ export class MatchingComponent implements OnInit {
       this.selected = match;
       this.matchingSuccess = true;
       // ซ่อน success message หลังจาก 3 วินาที
-      setTimeout(() => {
-        this.matchingSuccess = false;
-      }, 3000);
+      // setTimeout(() => {
+      //   this.matchingSuccess = false;
+      // }, 3000);
     }
 
     this.scanInput = '';

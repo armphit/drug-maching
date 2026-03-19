@@ -1,0 +1,109 @@
+.dialog-content {
+  padding: 24px;
+  // min-width: 520px;
+  // max-width: 760px;
+
+  // border-radius: 16px;
+  // background: #fff;
+  // box-shadow: 0 24px 70px rgba(0, 0, 0, 0.18);
+  // font-family: 'Segoe UI', 'Noto Sans Thai', Roboto, sans-serif;
+  // color: #1f1f1f;
+}
+
+.dialog-content.error {
+  border-left: 6px solid #d32f2f;
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 10px;
+}
+
+.icon-wrapper {
+  width: 54px;
+  height: 54px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  background: rgba(211, 47, 47, 0.16);
+  box-shadow: 0 8px 20px rgba(211, 47, 47, 0.18);
+}
+
+.icon-wrapper mat-icon {
+  font-size: 28px;
+  color: #d32f2f;
+}
+
+.text-group {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.title {
+  font-size: 2.5rem;
+  font-weight: 800;
+  line-height: 1.2;
+}
+
+.subtitle {
+  font-size: 1.25rem;
+  color: #55637d;
+}
+
+.message {
+  font-size: 1.5rem;
+  line-height: 1.6;
+  margin: 10px 0 10px;
+  color: #222;
+  white-space: pre-wrap;
+  font-weight: 800;
+}
+
+.actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+}
+
+.btn-cancel,
+.btn-confirm {
+  min-width: 140px;
+  border-radius: 10px;
+  font-size: 1.05rem;
+  font-weight: 600;
+  text-transform: none;
+  height: 46px;
+}
+
+.btn-cancel {
+  border: 1px solid #cad1dc;
+  color: #1f2f44;
+  background: #fff;
+}
+
+.btn-confirm {
+  background: #d32f2f;
+  color: #fff;
+}
+
+.app-dialog-lg .mat-dialog-container {
+  padding: 0;
+  border-radius: 18px;
+  overflow: hidden;
+  box-shadow: 0 30px 90px rgba(0, 0, 0, 0.25);
+}
+
+@keyframes popupFade {
+  from {
+    opacity: 0;
+    transform: scale(0.95) translateY(10px);
+  }
+
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}

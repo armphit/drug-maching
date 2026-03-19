@@ -5,13 +5,13 @@ import { Patient } from '../models/patient.model';
 export class PatientApiService {
   base = 'http://localhost:3000';
 
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient) { }
 
   getPatients() {
     return this.http.get<Patient[]>(`${this.base}/patients`);
   }
 
-  remove(hn: string) {
-    return this.http.delete(`${this.base}/patients/${hn}`);
+  remove(patient: Patient) {
+    return this.http.post(`${this.base}/update_patients/`, patient);
   }
 }

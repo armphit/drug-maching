@@ -1,0 +1,30 @@
+<div class="dialog-content error">
+  <div class="header">
+    <div class="icon-wrapper">
+      <mat-icon>error_outline</mat-icon>
+    </div>
+
+    <div class="text-group">
+      <div class="title">
+        {{ data.title || 'เกิดข้อผิดพลาด' }}
+      </div>
+      <div class="subtitle">
+        กรุณาตรวจสอบและลองใหม่
+      </div>
+    </div>
+  </div>
+
+  <div class="message">
+    {{ data.message }}
+  </div>
+
+  <div class="actions">
+    <button mat-stroked-button class="btn-cancel" (click)="close()">
+      ยกเลิก
+    </button>
+
+    <button mat-flat-button color="warn" class="btn-confirm" (click)="close()">
+      {{ data.confirmText || 'ตกลง' }}
+    </button>
+  </div>
+</div>
