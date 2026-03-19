@@ -5,6 +5,8 @@ import { Patient } from '../models/patient.model';
 import { PatientApiService } from './patient-api.service';
 import { WsService } from './websocket.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { MatDialog } from '@angular/material/dialog';
+import { ConfirmationDialogComponent } from '../components/confirmation-dialog/confirmation-dialog.component';
 @Injectable({ providedIn: 'root' })
 export class QueueService implements OnDestroy {
   private _patients = new BehaviorSubject<Patient[]>([]);
@@ -18,6 +20,7 @@ export class QueueService implements OnDestroy {
     private ws: WsService,
     private loading: LoadingOverlayService,
     private snack: MatSnackBar,
+    private dialog: MatDialog,
   ) {
     this.loadInitial();
   }
@@ -72,9 +75,9 @@ export class QueueService implements OnDestroy {
 
     this.loading.show(patient);
 
-    await new Promise((r) => setTimeout(r, 2000));
+    await new Promise((r) => setTimeout(r, 500));
 
-    await this.removePatient(hn);
+    await this.removePatient(patient);
 
     this.loading.hide();
 
@@ -132,14 +135,55 @@ export class QueueService implements OnDestroy {
     return this.running;
   }
 
+  private showErrorDialog(message: string) {
+    // this.dialog.open(ConfirmationDialogComponent, {
+    //   data: {
+    //     title: 'เกิดข้อผิดพลาด',
+    //     message: 'ผู้ป่วยมีรายการแพ้ยา',
+    //     confirmText: 'ตกลง',
+    //   },
+    //   width: '320px',
+    //   disableClose: true,
+    // });
+    this.dialog.open(ConfirmationDialogComponent, {
+      width: '450px',          // เดิม 420 → x2
+      maxWidth: '95vw',
+      panelClass: 'app-dialog-lg',
+      disableClose: true,
+      data: {
+        title: 'เกิดข้อผิดพลาด',
+        message: 'ผู้ป่วยมีรายการแพ้ยา',
+        confirmText: 'ตกลง',
+      }
+    });
+  }
+
   /* ===============================
      ลบผู้ป่วย
   =============================== */
-  removePatient(hn: string) {
-    this.api.remove(hn).subscribe(() => {
-      const next = this._patients.value.filter((p) => p.hn !== hn);
+  removePatient(patient: Patient) {
+    this.api.remove(patient).subscribe({
+      next: (val: any) => {
+        // If API returns updated patient list in val.data, use it.
+        if (val?.data && Array.isArray(val.data)) {
+          this._patients.next(val.data);
+          return;
+        }
 
-      this._patients.next(next);
+        // If API says there's an allergy or validation issue, show popup.
+        if (val?.message) {
+          this.showErrorDialog('ผู้ป่วยมีรายการแพ้ยา');
+          return;
+        }
+
+        // Fallback: remove locally when API didn't return list.
+        const filtered = this._patients.value.filter((p) => p.hn !== patient.hn);
+        this._patients.next(filtered);
+      },
+      error: (err: any) => {
+        console.error('Remove patient failed', err);
+        this.showErrorDialog('ไม่สามารถลบข้อมูลได้ กรุณาลองใหม่');
+      },
     });
   }
 
