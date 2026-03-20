@@ -3,7 +3,7 @@
   <header class="topbar">
     <div class="left">
       <!-- <mat-icon>local_pharmacy</mat-icon> -->
-      <span>Drug Matching System</span>
+      <span>{{comName}}</span>
     </div>
 
     <div class="right">
@@ -13,14 +13,8 @@
 
   <!-- SCAN BAR -->
   <section class="scan-bar">
-    <input
-      #scanBox
-      type="text"
-      [(ngModel)]="scanInput"
-      (keyup.enter)="scanHN()"
-      placeholder="Scan HN..."
-      class="scan-input"
-    />
+    <input #scanBox type="text" [(ngModel)]="scanInput" (keyup.enter)="scanHN()" placeholder="Scan HN..."
+      class="scan-input" />
   </section>
 
   <!-- MAIN CONTENT -->
@@ -32,11 +26,7 @@
 
         <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
 
-        <tr
-          mat-row
-          *matRowDef="let row; columns: ['queue', 'name']"
-          [class.selected]="selected?.hn === row.hn"
-        ></tr>
+        <tr mat-row *matRowDef="let row; columns: ['queue', 'name']" [class.selected]="selected?.hn === row.hn"></tr>
       </table>
     </div>
 

@@ -1,78 +1,69 @@
-import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { QueueService } from 'src/app/services/queue.service';
 import { Patient } from 'src/app/models/patient.model';
-import { animate, style, transition, trigger } from '@angular/animations';
+import { PatientApiService } from 'src/app/services/patient-api.service';
 
 @Component({
   selector: 'app-matching',
   templateUrl: './matching.component.html',
   styleUrls: ['./matching.component.scss'],
-  animations: [
-    trigger('rowAnimation', [
-      transition(':leave', [
-        style({ transform: 'translateX(0)', opacity: 1 }),
-        animate(
-          '250ms ease-out',
-          style({ transform: 'translateX(-100%)', opacity: 0 }),
-        ),
-      ]),
-    ]),
-  ],
 })
 export class MatchingComponent implements OnInit {
   patients: Patient[] = [];
   selected?: Patient;
-  scanInput = '';
   displayedColumns = ['queue', 'hn', 'patientname', 'timeConfirm', 'zone'];
-  running = true;
-  matchingSuccess = false;
-  @ViewChild('scanBox') scanBox!: ElementRef;
+  private zoneFilter?: string;
+  private currentQueue: Patient[] = [];
 
-  constructor(private queueService: QueueService) { }
+  constructor(private queueService: QueueService, private api: PatientApiService) { }
 
   ngOnInit() {
+    this.loadComputerName();
+
     this.queueService.patients$.subscribe((data) => {
-      console.log('Updated patients list:', data);
-      this.patients = data;
+      this.currentQueue = data;
+      this.applyZoneFilter();
     });
   }
-  ngAfterViewInit() {
-    this.focus();
-  }
 
-  focus() {
-    setTimeout(() => this.scanBox?.nativeElement.focus(), 0);
-  }
-  async scanHN() {
-    const hn = this.scanInput.trim();
-    let match = await this.queueService.processScan(hn);
-    if (match) {
-      this.selected = match;
-      this.matchingSuccess = true;
-      // ซ่อน success message หลังจาก 3 วินาที
-      // setTimeout(() => {
-      //   this.matchingSuccess = false;
-      // }, 3000);
+  private applyZoneFilter() {
+    const queue = Array.isArray(this.currentQueue) ? this.currentQueue : [];
+    if (!this.zoneFilter) {
+      this.patients = queue;
+      return;
     }
-
-    this.scanInput = '';
-    this.focusScan();
+    this.patients = queue.filter((p) => p.zone === this.zoneFilter);
+    if (this.selected && this.selected.zone !== this.zoneFilter) {
+      this.selected = undefined;
+    }
+  }
+  comName: any = null
+  async loadComputerName() {
+    try {
+      this.comName = await this.api.getComputerName().toPromise();
+      if (typeof this.comName === 'string') {
+        const parts = this.comName.split('-');
+        if (parts.length > 1) {
+          this.zoneFilter = parts[1];
+        }
+      }
+      this.applyZoneFilter();
+    } catch (error) {
+      console.error('Error fetching computer name:', error);
+    }
   }
 
-  focusScan() {
-    setTimeout(() => {
-      this.scanBox.nativeElement.focus();
-    });
-  }
-  onClickAnywhere() {
-    this.focus();
+  refreshQueue() {
+    this.queueService.loadQueue();
   }
 
-  toggleRealtime() {
-    this.queueService.toggleRealtime();
-    this.running = this.queueService.isRunning();
+  selectRow(patient: Patient) {
+    this.selected = patient;
   }
-  // autoPrint(patient: Patient) {
-  //   window.print();
-  // }
+
+  async printRoute() {
+    if (!this.selected || !this.zoneFilter) return;
+    await this.queueService.removePatient(this.selected, this.zoneFilter);
+  }
 }
+

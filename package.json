@@ -4,17 +4,12 @@
   "description": "Drug Matching Kiosk System",
   "author": "Phitchayakorn",
   "private": true,
-  "main": "electron/main.js",
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
-    "build": "ng build --base-href ./",
+    "build": "ng build --configuration production --output-hashing=all --base-href=/drug-maching/",
     "watch": "ng build --watch --configuration development",
-    "test": "ng test",
-    "electron": "npm run build && electron .",
-    "electron:dev": "concurrently \"ng serve\" \"wait-on http://localhost:4200 && electron .\"",
-    "electron:portable": "npm run build && electron-builder --win portable",
-    "electron:dist": "npm run build && electron-builder"
+    "test": "ng test"
   },
   "dependencies": {
     "@angular/animations": "^14.2.0",
@@ -38,33 +33,12 @@
     "@angular/compiler-cli": "^14.2.0",
     "@types/jasmine": "~4.0.0",
     "@types/node": "^16.18.126",
-    "concurrently": "^8.2.2",
-    "electron": "^28.3.3",
-    "electron-builder": "^24.13.3",
     "jasmine-core": "~4.3.0",
     "karma": "~6.4.0",
     "karma-chrome-launcher": "~3.1.0",
     "karma-coverage": "~2.2.0",
     "karma-jasmine": "~5.1.0",
     "karma-jasmine-html-reporter": "~2.0.0",
-    "typescript": "~4.7.2",
-    "wait-on": "^7.0.1"
-  },
-  "build": {
-    "appId": "com.drug.matching",
-    "productName": "DrugMatching",
-    "directories": {
-      "output": "release"
-    },
-    "asar": true,
-    "files": [
-      "**/*",
-      "!release/**/*",
-      "!node_modules/.cache/**/*"
-    ],
-    "win": {
-      "target": "portable",
-      "artifactName": "${productName}.exe"
-    }
+    "typescript": "~4.7.2"
   }
 }

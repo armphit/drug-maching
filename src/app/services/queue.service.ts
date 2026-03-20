@@ -1,6 +1,6 @@
 import { LoadingOverlayService } from './loading-overlay.service';
 import { Injectable, OnDestroy } from '@angular/core';
-import { BehaviorSubject, Subscription } from 'rxjs';
+import { BehaviorSubject, Subscription, firstValueFrom } from 'rxjs';
 import { Patient } from '../models/patient.model';
 import { PatientApiService } from './patient-api.service';
 import { WsService } from './websocket.service';
@@ -22,13 +22,13 @@ export class QueueService implements OnDestroy {
     private snack: MatSnackBar,
     private dialog: MatDialog,
   ) {
-    this.loadInitial();
+    this.loadQueue();
   }
 
   /* ===============================
-     โหลดข้อมูลครั้งแรก (REST)
+     โหลดข้อมูลคิวจาก API
   =============================== */
-  private loadInitial() {
+  loadQueue() {
     this.api.getPatients().subscribe((p) => {
       this._patients.next(p);
     });
@@ -52,37 +52,37 @@ export class QueueService implements OnDestroy {
   //   return patient;
   //   } // ⭐ สำคัญมาก
   // }
-  async processScan(hn: string): Promise<Patient | null> {
-    const patient = this._patients.value.find((p) => p.hn === hn);
+  // async processScan(hn: string): Promise<Patient | null> {
+  //   const patient = this._patients.value.find((p) => p.hn === hn);
 
-    /* ========================= */
-    /* ❌ ไม่พบ */
-    /* ========================= */
-    if (!patient) {
-      this.snack.open(`ไม่พบข้อมูล HN ${hn}`, 'ปิด', {
-        duration: 5000,
-        horizontalPosition: 'center', // ขวา
-        verticalPosition: 'top', // บน
-        panelClass: ['snack-error'],
-      });
+  //   /* ========================= */
+  //   /* ❌ ไม่พบ */
+  //   /* ========================= */
+  //   if (!patient) {
+  //     this.snack.open(`ไม่พบข้อมูล HN ${hn}`, 'ปิด', {
+  //       duration: 5000,
+  //       horizontalPosition: 'center', // ขวา
+  //       verticalPosition: 'top', // บน
+  //       panelClass: ['snack-error'],
+  //     });
 
-      return null;
-    }
+  //     return null;
+  //   }
 
-    /* ========================= */
-    /* ✅ พบ */
-    /* ========================= */
+  //   /* ========================= */
+  //   /* ✅ พบ */
+  //   /* ========================= */
 
-    this.loading.show(patient);
+  //   this.loading.show(patient);
 
-    await new Promise((r) => setTimeout(r, 500));
+  //   await new Promise((r) => setTimeout(r, 500));
 
-    await this.removePatient(patient);
+  //   await this.removePatient(patient);
 
-    this.loading.hide();
+  //   this.loading.hide();
 
-    return patient;
-  }
+  //   return patient;
+  // }
 
   /* ===============================
      ▶ START REALTIME (WebSocket)
@@ -152,7 +152,6 @@ export class QueueService implements OnDestroy {
       disableClose: true,
       data: {
         title: 'เกิดข้อผิดพลาด',
-        message: 'ผู้ป่วยมีรายการแพ้ยา',
         confirmText: 'ตกลง',
       }
     });
@@ -161,30 +160,28 @@ export class QueueService implements OnDestroy {
   /* ===============================
      ลบผู้ป่วย
   =============================== */
-  removePatient(patient: Patient) {
-    this.api.remove(patient).subscribe({
-      next: (val: any) => {
-        // If API returns updated patient list in val.data, use it.
-        if (val?.data && Array.isArray(val.data)) {
-          this._patients.next(val.data);
-          return;
-        }
+  async removePatient(patient: Patient, zone: string): Promise<boolean> {
+    this.loading.show(patient);
 
-        // If API says there's an allergy or validation issue, show popup.
-        if (val?.message) {
-          this.showErrorDialog('ผู้ป่วยมีรายการแพ้ยา');
-          return;
-        }
+    try {
+      const val: any = await firstValueFrom(this.api.remove(patient, zone));
+      this.loading.hide();
 
-        // Fallback: remove locally when API didn't return list.
-        const filtered = this._patients.value.filter((p) => p.hn !== patient.hn);
-        this._patients.next(filtered);
-      },
-      error: (err: any) => {
-        console.error('Remove patient failed', err);
-        this.showErrorDialog('ไม่สามารถลบข้อมูลได้ กรุณาลองใหม่');
-      },
-    });
+
+      this.snack.open('พิมพ์ใบนำทางเรียบร้อย', 'ปิด', {
+        duration: 3000,
+        horizontalPosition: 'center',
+        verticalPosition: 'top',
+        panelClass: ['snack-success'],
+      });
+
+      return true;
+    } catch (err: any) {
+      this.loading.hide();
+      console.error('Remove patient failed', err);
+      this.showErrorDialog('ไม่สามารถลบข้อมูลได้ กรุณาลองใหม่');
+      return false;
+    }
   }
 
   /* ===============================

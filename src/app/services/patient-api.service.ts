@@ -11,7 +11,11 @@ export class PatientApiService {
     return this.http.get<Patient[]>(`${this.base}/patients`);
   }
 
-  remove(patient: Patient) {
-    return this.http.post(`${this.base}/update_patients/`, patient);
+  getComputerName() {
+    return this.http.get(`${this.base}/getComputerName`);
+  }
+
+  remove(patient: Patient, zone: string) {
+    return this.http.post(`${this.base}/update_patients/`, { ...patient, zone });
   }
 }

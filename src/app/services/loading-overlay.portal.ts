@@ -27,7 +27,7 @@ import { MatCardModule } from '@angular/material/card';
             </p>
             <p class="patient-hn">
               HN: {{ patient?.hn || '00000000' }} Queue No:
-              {{ patient?.queueNo || '00000000' }}
+              {{ patient?.queueNo||patient?.phar_queue||patient?.queue || '00000000' }}
             </p>
 
             <div class="status-container">
